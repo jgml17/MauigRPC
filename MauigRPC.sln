@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauigRPC", "MauigRPC\MauigRPC.csproj", "{4C542B20-A958-4A46-AEC1-730C2E11AEF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcServiceApi", "GrpcServiceApi\GrpcServiceApi.csproj", "{9C78C211-425C-4EDC-A401-4E1F2EDC8245}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4C542B20-A958-4A46-AEC1-730C2E11AEF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C542B20-A958-4A46-AEC1-730C2E11AEF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C542B20-A958-4A46-AEC1-730C2E11AEF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C78C211-425C-4EDC-A401-4E1F2EDC8245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C78C211-425C-4EDC-A401-4E1F2EDC8245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C78C211-425C-4EDC-A401-4E1F2EDC8245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C78C211-425C-4EDC-A401-4E1F2EDC8245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
