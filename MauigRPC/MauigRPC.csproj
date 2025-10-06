@@ -74,4 +74,13 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="..\GRPC_QUICK_REFERENCE.md">
+        <Link>GRPC_QUICK_REFERENCE.md</Link>
+      </Content>
+      <Content Include="..\GRPC_VS_REST_GUIDE.md">
+        <Link>GRPC_VS_REST_GUIDE.md</Link>
+      </Content>
+    </ItemGroup>
+
 </Project>
