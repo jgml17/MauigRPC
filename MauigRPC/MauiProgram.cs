@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using MauigRPC.Services;
+using MauigRPC.ViewModels;
 
 namespace MauigRPC;
 
@@ -78,6 +79,12 @@ public static class MauiProgram
         // Register services for dependency injection
         // Singleton: One instance shared across the entire application
         builder.Services.AddSingleton<GrpcGreeterService>();
+        
+        // Register ViewModels
+        // Transient: New instance created each time it's requested (fresh state per navigation)
+        builder.Services.AddTransient<MainViewModel>();
+        
+        // Register Pages
         // Transient: New instance created each time it's requested
         builder.Services.AddTransient<MainPage>();
 
