@@ -42,6 +42,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/>
 
@@ -62,6 +66,12 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0"/>
+        <PackageReference Include="Grpc.Net.Client" Version="2.64.0"/>
+        <PackageReference Include="Google.Protobuf" Version="3.27.0"/>
+        <PackageReference Include="Grpc.Tools" Version="2.64.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>
