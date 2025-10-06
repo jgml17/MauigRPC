@@ -75,6 +75,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="..\DOCUMENTATION_SUMMARY.md">
+        <Link>DOCUMENTATION_SUMMARY.md</Link>
+      </Content>
       <Content Include="..\GRPC_QUICK_REFERENCE.md">
         <Link>GRPC_QUICK_REFERENCE.md</Link>
       </Content>
