@@ -1,5 +1,4 @@
 using Grpc.Core;
-using GrpcServiceApi;
 
 namespace GrpcServiceApi.Services;
 
@@ -18,18 +17,18 @@ namespace GrpcServiceApi.Services;
 /// 
 /// For production, replace the in-memory dictionary with a real database (Entity Framework, Dapper, etc.)
 /// </remarks>
-public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactServiceBase
+public class ContactServiceImpl : ContactService.ContactServiceBase
 {
     /// <summary>
     /// In-memory storage for contacts. Key: Contact ID, Value: Contact object.
     /// In production, replace this with a database.
     /// </summary>
-    private static readonly Dictionary<int, Contact> _contacts = new();
+    private static readonly Dictionary<int, Contact> Contacts = new();
     
     /// <summary>
-    /// Thread-safe lock for accessing the contacts dictionary.
+    /// Thread-safe lock for accessing the contacts' dictionary.
     /// </summary>
-    private static readonly object _lock = new();
+    private static readonly Lock Lock = new();
     
     /// <summary>
     /// Auto-incrementing ID for new contacts.
@@ -42,7 +41,7 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
     static ContactServiceImpl()
     {
         // Seed initial data
-        _contacts[1] = new Contact
+        Contacts[1] = new Contact
         {
             Id = 1,
             Name = "John Doe",
@@ -61,7 +60,7 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
             }
         };
 
-        _contacts[2] = new Contact
+        Contacts[2] = new Contact
         {
             Id = 2,
             Name = "Jane Smith",
@@ -114,7 +113,7 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Name is required"));
         }
 
-        lock (_lock)
+        lock (Lock)
         {
             // Create new contact with auto-generated ID
             var contact = new Contact
@@ -126,7 +125,7 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
             };
 
             // Store in memory
-            _contacts[contact.Id] = contact;
+            Contacts[contact.Id] = contact;
 
             // Return success response
             return Task.FromResult(new ContactReply
@@ -149,10 +148,10 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
     /// </remarks>
     public override Task<ContactReply> GetContact(GetContactRequest request, ServerCallContext context)
     {
-        lock (_lock)
+        lock (Lock)
         {
             // Check if contact exists
-            if (!_contacts.TryGetValue(request.Id, out var contact))
+            if (!Contacts.TryGetValue(request.Id, out var contact))
             {
                 throw new RpcException(new Status(StatusCode.NotFound, $"Contact with ID {request.Id} not found"));
             }
@@ -181,15 +180,15 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
     /// </remarks>
     public override Task<ContactListReply> GetAllContacts(GetAllContactsRequest request, ServerCallContext context)
     {
-        lock (_lock)
+        lock (Lock)
         {
             var reply = new ContactListReply
             {
-                TotalCount = _contacts.Count
+                TotalCount = Contacts.Count
             };
 
             // Add all contacts to the reply
-            reply.Contacts.AddRange(_contacts.Values);
+            reply.Contacts.AddRange(Contacts.Values);
 
             return Task.FromResult(reply);
         }
@@ -213,10 +212,10 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Name is required"));
         }
 
-        lock (_lock)
+        lock (Lock)
         {
             // Check if contact exists
-            if (!_contacts.ContainsKey(request.Id))
+            if (!Contacts.ContainsKey(request.Id))
             {
                 throw new RpcException(new Status(StatusCode.NotFound, $"Contact with ID {request.Id} not found"));
             }
@@ -230,7 +229,7 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
                 PhoneNumbers = { request.PhoneNumbers }
             };
 
-            _contacts[request.Id] = contact;
+            Contacts[request.Id] = contact;
 
             return Task.FromResult(new ContactReply
             {
@@ -249,17 +248,17 @@ public class ContactServiceImpl : global::GrpcServiceApi.ContactService.ContactS
     /// <returns>A DeleteContactReply with success status.</returns>
     public override Task<DeleteContactReply> DeleteContact(DeleteContactRequest request, ServerCallContext context)
     {
-        lock (_lock)
+        lock (Lock)
         {
             // Check if contact exists
-            if (!_contacts.ContainsKey(request.Id))
+            if (!Contacts.ContainsKey(request.Id))
             {
                 throw new RpcException(new Status(StatusCode.NotFound, $"Contact with ID {request.Id} not found"));
             }
 
             // Remove the contact
-            var contact = _contacts[request.Id];
-            _contacts.Remove(request.Id);
+            var contact = Contacts[request.Id];
+            Contacts.Remove(request.Id);
 
             return Task.FromResult(new DeleteContactReply
             {
