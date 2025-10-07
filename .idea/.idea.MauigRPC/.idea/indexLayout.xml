@@ -4,6 +4,7 @@
     <attachedFolders>
       <Path>.idea</Path>
       <Path>GrpcJSServiceApi</Path>
+      <Path>NextJSgRPC</Path>
     </attachedFolders>
     <explicitIncludes />
     <explicitExcludes />
