@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServiceApi";
+
+package contact;
+
+// The Contact service definition with CRUD operations.
+service ContactService {
+  // Creates a new contact
+  rpc CreateContact (CreateContactRequest) returns (ContactReply);
+  
+  // Gets a contact by ID
+  rpc GetContact (GetContactRequest) returns (ContactReply);
+  
+  // Gets all contacts
+  rpc GetAllContacts (GetAllContactsRequest) returns (ContactListReply);
+  
+  // Updates an existing contact
+  rpc UpdateContact (UpdateContactRequest) returns (ContactReply);
+  
+  // Deletes a contact by ID
+  rpc DeleteContact (DeleteContactRequest) returns (DeleteContactReply);
+}
+
+// Contact message - the main model
+message Contact {
+  int32 id = 1;
+  string name = 2;
+  Address address = 3; // Nested message
+  repeated PhoneNumber phone_numbers = 4;  // List<PhoneNumber> in C#
+}
+
+message Address {
+  string street = 1;
+  string city = 2;
+  string state = 3;
+  string zip_code = 4;
+  string country = 5;
+}
+
+message PhoneNumber {
+  string number = 1;
+  PhoneType type = 2;  // Enum
+}
+
+enum PhoneType {
+  MOBILE = 0;
+  HOME = 1;
+  WORK = 2;
+}
+
+// Request to create a new contact (no ID - server generates it)
+message CreateContactRequest {
+  string name = 1;
+  Address address = 2;
+  repeated PhoneNumber phone_numbers = 3;
+}
+
+// Request to get a contact by ID
+message GetContactRequest {
+  int32 id = 1;
+}
+
+// Request to get all contacts (could add pagination later)
+message GetAllContactsRequest {
+  // Empty for now, but could add filters:
+  // int32 page_size = 1;
+  // int32 page_number = 2;
+}
+
+// Request to update a contact
+message UpdateContactRequest {
+  int32 id = 1;
+  string name = 2;
+  Address address = 3;
+  repeated PhoneNumber phone_numbers = 4;
+}
+
+// Request to delete a contact
+message DeleteContactRequest {
+  int32 id = 1;
+}
+
+// Reply containing a single contact
+message ContactReply {
+  Contact contact = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+// Reply containing a list of contacts
+message ContactListReply {
+  repeated Contact contacts = 1;
+  int32 total_count = 2;
+}
+
+// Reply for delete operation
+message DeleteContactReply {
+  bool success = 1;
+  string message = 2;
+}
