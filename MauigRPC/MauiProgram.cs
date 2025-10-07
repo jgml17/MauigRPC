@@ -79,14 +79,17 @@ public static class MauiProgram
         // Register services for dependency injection
         // Singleton: One instance shared across the entire application
         builder.Services.AddSingleton<GrpcGreeterService>();
+        builder.Services.AddSingleton<GrpcContactService>();
         
         // Register ViewModels
         // Transient: New instance created each time it's requested (fresh state per navigation)
         builder.Services.AddTransient<MainViewModel>();
+        builder.Services.AddTransient<ContactsViewModel>();
         
         // Register Pages
         // Transient: New instance created each time it's requested
         builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<ContactsPage>();
 
 #if DEBUG
         // Add debug logging in development builds

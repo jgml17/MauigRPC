@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MauigRPC.ViewModels"
+             xmlns:grpc="clr-namespace:GrpcServiceApi;assembly=MauigRPC"
+             x:Class="MauigRPC.ContactsPage"
+             x:DataType="viewmodels:ContactsViewModel"
+             Title="Contacts">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+        
+        <!-- Header with buttons -->
+        <HorizontalStackLayout Grid.Row="0" Spacing="10" Margin="0,0,0,10">
+            <Button Text="Load Contacts" 
+                    Command="{Binding LoadContactsCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                    HorizontalOptions="FillAndExpand" />
+            
+            <Button Text="Add Contact" 
+                    Command="{Binding AddContactCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                    BackgroundColor="{StaticResource Primary}"
+                    HorizontalOptions="FillAndExpand" />
+        </HorizontalStackLayout>
+
+        <!-- Contacts List -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshContactsCommand}">
+            
+            <CollectionView ItemsSource="{Binding Contacts}"
+                           SelectionMode="None">
+                
+                <CollectionView.EmptyView>
+                    <StackLayout Padding="20" VerticalOptions="Center">
+                        <Label Text="No contacts found" 
+                               FontSize="18"
+                               HorizontalOptions="Center"
+                               TextColor="Gray" />
+                        <Label Text="Tap 'Load Contacts' to fetch from server" 
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               TextColor="Gray"
+                               Margin="0,10,0,0" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="grpc:Contact">
+                        <SwipeView>
+                            <!-- Swipe to delete -->
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Delete"
+                                              BackgroundColor="Red"
+                                              Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ContactsViewModel}}, Path=DeleteContactCommand}"
+                                              CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <!-- Contact Card -->
+                            <Border Margin="0,5" 
+                                    Padding="15"
+                                    Stroke="{StaticResource Primary}"
+                                    StrokeThickness="1"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ContactsViewModel}}, Path=ViewContactDetailsCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                        <!-- Name -->
+                                        <Label Text="{Binding Name}" 
+                                               FontSize="18"
+                                               FontAttributes="Bold" />
+                                        
+                                        <!-- Address -->
+                                        <Label FontSize="14" TextColor="Gray">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0}, {1}">
+                                                    <Binding Path="Address.City" />
+                                                    <Binding Path="Address.State" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+
+                                        <!-- Phone Numbers -->
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="📱" FontSize="14" />
+                                            <Label Text="{Binding PhoneNumbers.Count, StringFormat='{0} phone(s)'}" 
+                                                   FontSize="14"
+                                                   TextColor="Gray" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+
+                                    <!-- ID Badge -->
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="{StaticResource Primary}"
+                                            Padding="10,5"
+                                            StrokeThickness="0"
+                                            VerticalOptions="Start">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+                                        <Label Text="{Binding Id, StringFormat='ID: {0}'}" 
+                                               FontSize="12"
+                                               TextColor="White"
+                                               FontAttributes="Bold" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="2" 
+              ColumnDefinitions="*,Auto"
+              Margin="0,10,0,0"
+              Padding="10"
+              BackgroundColor="{StaticResource Primary}">
+            
+            <Label Grid.Column="0"
+                   Text="{Binding StatusMessage}" 
+                   FontSize="14"
+                   TextColor="White"
+                   VerticalOptions="Center" />
+            
+            <ActivityIndicator Grid.Column="1"
+                              IsRunning="{Binding IsLoading}"
+                              IsVisible="{Binding IsLoading}"
+                              Color="White"
+                              VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+
+</ContentPage>
